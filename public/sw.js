@@ -1,4 +1,4 @@
-const CACHE_NAME = "gokana-pocket-v1";
+const CACHE_NAME = "bunbun-go-v1";
 const PRECACHE_URLS = ["/", "/index.html", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {

@@ -1,7 +1,7 @@
 {
-  "name": "vite-react-boilerplate",
+  "name": "bun-bun-go",
   "author": "Ricardo Valdovinos <ricardovaldovinos1996@gmail.com>",
-  "description": "A production ready, batteries included starter template for Vite + React projects",
+  "description": "Bun Bun Go — Offline Hiragana & Katakana Flashcard Arcade Game",
   "keywords": [
     "vite",
     "react",

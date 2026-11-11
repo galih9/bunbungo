@@ -9,17 +9,23 @@ import {
 	type UserProgression,
 } from "./storageTypes";
 
-const SETTINGS_STORAGE_KEY = "gokana_offline_settings_v1";
-const MASTERY_STORAGE_KEY = "gokana_offline_mastery_v1";
-export const HIGHSCORES_STORAGE_KEY = "gokana_offline_highscores_v1";
-const PROGRESSION_STORAGE_KEY = "gokana_offline_progression_v1";
+const SETTINGS_STORAGE_KEY = "bunbungo_offline_settings_v1";
+const LEGACY_SETTINGS_STORAGE_KEY = "gokana_offline_settings_v1";
+const MASTERY_STORAGE_KEY = "bunbungo_offline_mastery_v1";
+const LEGACY_MASTERY_STORAGE_KEY = "gokana_offline_mastery_v1";
+export const HIGHSCORES_STORAGE_KEY = "bunbungo_offline_highscores_v1";
+const LEGACY_HIGHSCORES_STORAGE_KEY = "gokana_offline_highscores_v1";
+const PROGRESSION_STORAGE_KEY = "bunbungo_offline_progression_v1";
+const LEGACY_PROGRESSION_STORAGE_KEY = "gokana_offline_progression_v1";
 
 export const loadGameSettings = (): StoredGameSettings => {
 	if (typeof window === "undefined") {
 		return DEFAULT_GAME_SETTINGS;
 	}
 	try {
-		const raw = window.localStorage.getItem(SETTINGS_STORAGE_KEY);
+		const raw =
+			window.localStorage.getItem(SETTINGS_STORAGE_KEY) ??
+			window.localStorage.getItem(LEGACY_SETTINGS_STORAGE_KEY);
 		if (!raw) {
 			return DEFAULT_GAME_SETTINGS;
 		}
@@ -61,7 +67,9 @@ export const loadMasteryMap = (): Record<string, CharacterMastery> => {
 		return {};
 	}
 	try {
-		const raw = window.localStorage.getItem(MASTERY_STORAGE_KEY);
+		const raw =
+			window.localStorage.getItem(MASTERY_STORAGE_KEY) ??
+			window.localStorage.getItem(LEGACY_MASTERY_STORAGE_KEY);
 		if (!raw) {
 			return {};
 		}
@@ -89,7 +97,9 @@ export const loadUserProgression = (): UserProgression => {
 		return DEFAULT_USER_PROGRESSION;
 	}
 	try {
-		const raw = window.localStorage.getItem(PROGRESSION_STORAGE_KEY);
+		const raw =
+			window.localStorage.getItem(PROGRESSION_STORAGE_KEY) ??
+			window.localStorage.getItem(LEGACY_PROGRESSION_STORAGE_KEY);
 		if (!raw) {
 			return DEFAULT_USER_PROGRESSION;
 		}
@@ -137,7 +147,9 @@ export const loadHighScores = (): Array<HighScoreRecord> => {
 		return [];
 	}
 	try {
-		const raw = window.localStorage.getItem(HIGHSCORES_STORAGE_KEY);
+		const raw =
+			window.localStorage.getItem(HIGHSCORES_STORAGE_KEY) ??
+			window.localStorage.getItem(LEGACY_HIGHSCORES_STORAGE_KEY);
 		if (!raw) {
 			return [];
 		}
@@ -176,6 +188,9 @@ export const clearAllProgress = (): void => {
 		window.localStorage.removeItem(MASTERY_STORAGE_KEY);
 		window.localStorage.removeItem(HIGHSCORES_STORAGE_KEY);
 		window.localStorage.removeItem(PROGRESSION_STORAGE_KEY);
+		window.localStorage.removeItem(LEGACY_MASTERY_STORAGE_KEY);
+		window.localStorage.removeItem(LEGACY_HIGHSCORES_STORAGE_KEY);
+		window.localStorage.removeItem(LEGACY_PROGRESSION_STORAGE_KEY);
 	} catch {
 		// Ignore storage errors
 	}

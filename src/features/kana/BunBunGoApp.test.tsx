@@ -18,11 +18,11 @@ import {
 	seedSampleDashboardData,
 	updateCharacterMastery,
 } from "./gameStorage";
-import { GoKanaApp } from "./GoKanaApp";
+import { BunBunGoApp } from "./BunBunGoApp";
 import { KanaDashboard } from "./KanaDashboard";
 import { KANA_ITEMS } from "./kanaData";
 
-describe("GoKanaApp & Local Performance / Progression Analytics", () => {
+describe("BunBunGoApp & Local Performance / Progression Analytics", () => {
 	beforeEach(() => {
 		window.localStorage.clear();
 		HTMLDialogElement.prototype.showModal = vi.fn(function (
@@ -38,13 +38,13 @@ describe("GoKanaApp & Local Performance / Progression Analytics", () => {
 	});
 
 	it("renders the minimalist lobby and starts a flashcard session", () => {
-		render(<GoKanaApp />);
+		render(<BunBunGoApp />);
 
-		expect(screen.getByText("GoKana Pocket")).toBeTruthy();
+		expect(screen.getByText("Bun Bun Go")).toBeTruthy();
 		expect(screen.getByText("Writing System")).toBeTruthy();
 
 		const startButton = screen.getByRole("button", {
-			name: /Start GoKana Session/i,
+			name: /Start Bun Bun Go Session/i,
 		});
 		fireEvent.click(startButton);
 
@@ -53,7 +53,7 @@ describe("GoKanaApp & Local Performance / Progression Analytics", () => {
 	});
 
 	it("switches between Hiragana, Katakana, and Mixed modes and opens the Kana Chart", () => {
-		render(<GoKanaApp />);
+		render(<BunBunGoApp />);
 
 		const katakanaButton = screen.getByRole("button", { name: /Katakana/i });
 		fireEvent.click(katakanaButton);
@@ -121,7 +121,7 @@ describe("GoKanaApp & Local Performance / Progression Analytics", () => {
 		});
 		saveMasteryMap(masteryMap);
 
-		render(<GoKanaApp />);
+		render(<BunBunGoApp />);
 
 		expect(screen.getAllByText(/2 weak/i).length).toBeGreaterThan(0);
 		const drillNowButton = screen.getByRole("button", {
@@ -186,7 +186,7 @@ describe("GoKanaApp & Local Performance / Progression Analytics", () => {
 	});
 
 	it("renders the primary navigation bar with aria-current page indication and skip link", () => {
-		render(<GoKanaApp />);
+		render(<BunBunGoApp />);
 
 		const primaryNav = screen.getByRole("navigation", { name: "Primary" });
 		expect(primaryNav).toBeTruthy();

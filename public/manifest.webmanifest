@@ -1,6 +1,6 @@
 {
-  "name": "GoKana Pocket — Hiragana & Katakana Arcade",
-  "short_name": "GoKana",
+  "name": "Bun Bun Go — Hiragana & Katakana Arcade",
+  "short_name": "Bun Bun Go",
   "description": "Offline mobile-first flashcard arcade game for learning Japanese Hiragana and Katakana",
   "start_url": "/",
   "display": "standalone",

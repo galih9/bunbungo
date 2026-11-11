@@ -179,7 +179,7 @@ export const AppNavbar = ({
 			>
 				<div className="flex items-center gap-3">
 					<a
-						aria-label="GoKana Pocket Home"
+						aria-label="Bun Bun Go Home"
 						className="kana-interactive flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-base font-semibold text-zinc-100 hover:border-zinc-700"
 						href="/"
 						onClick={(event): void => {
@@ -193,7 +193,7 @@ export const AppNavbar = ({
 					<div>
 						<div className="flex items-center gap-2">
 							<span className="text-sm font-semibold tracking-tight text-zinc-100">
-								GoKana Pocket
+								Bun Bun Go
 							</span>
 							<span className="rounded-md border border-zinc-800 bg-zinc-900 px-1.5 py-0.5 text-[10px] font-medium tracking-wide text-zinc-400">
 								Lv.{level}

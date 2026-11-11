@@ -98,7 +98,7 @@ export const useKanaArenaController = (): KanaArenaController => {
 	const summaryHeadingRef = useRef<HTMLHeadingElement | null>(null);
 
 	useEffect(() => {
-		document.title = "Practice Arena | GoKana Pocket";
+		document.title = "Practice Arena | Bun Bun Go";
 	}, []);
 
 	useEffect(() => {

@@ -1,8 +1,8 @@
-# Vite React Boilerplate
+# Bun Bun Go
 
 ![](/public/vite-react-boilerplate.png)
 
-Everything you need to kick off your next Vite + React web app!
+Bun Bun Go — An offline mobile-first Japanese Hiragana & Katakana arcade and flashcard trainer.
 
 ## Table of Contents
 

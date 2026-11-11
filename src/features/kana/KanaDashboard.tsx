@@ -54,7 +54,7 @@ export const KanaDashboard = ({
 	const mainHeadingId = useId();
 
 	useEffect(() => {
-		document.title = "Performance Dashboard | GoKana Pocket";
+		document.title = "Performance Dashboard | Bun Bun Go";
 	}, []);
 
 	const summary = useMemo(
