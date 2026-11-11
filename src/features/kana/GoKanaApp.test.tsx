@@ -2,15 +2,24 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	analyzeKanaPerformance,
+	appendDistinctFlashcardToDeck,
+	areSameOrHomophoneKana,
+	buildDashboardSummary,
 	type CharacterMastery,
 	DEFAULT_USER_PROGRESSION,
 	evaluateSessionProgression,
+	generateChallengeDeck,
+	generateCustomItemsDeck,
+	generateWeakLettersDeck,
 	getAchievementProgressList,
 	getRowMasterySummary,
 	saveMasteryMap,
+	scheduleSpacedRetryInDeck,
+	seedSampleDashboardData,
 	updateCharacterMastery,
 } from "./gameStorage";
 import { GoKanaApp } from "./GoKanaApp";
+import { KanaDashboard } from "./KanaDashboard";
 import { KANA_ITEMS } from "./kanaData";
 
 describe("GoKanaApp & Local Performance / Progression Analytics", () => {
@@ -174,5 +183,139 @@ describe("GoKanaApp & Local Performance / Progression Analytics", () => {
 		expect(statuses.find((item) => item.id === "streak-15")?.isUnlocked).toBe(
 			true
 		);
+	});
+
+	it("renders the primary navigation bar with aria-current page indication and skip link", () => {
+		render(<GoKanaApp />);
+
+		const primaryNav = screen.getByRole("navigation", { name: "Primary" });
+		expect(primaryNav).toBeTruthy();
+
+		const practiceLink = screen.getByRole("link", { name: /Practice/i });
+		expect(practiceLink.getAttribute("aria-current")).toBe("page");
+
+		const dashboardLink = screen.getByRole("link", { name: /Dashboard/i });
+		expect(dashboardLink.getAttribute("aria-current")).toBeNull();
+	});
+
+	it("renders the Performance & Mastery Dashboard with charts, user performance summary, and sample telemetry", () => {
+		const navigateSpy = vi.fn();
+		render(<KanaDashboard onNavigate={navigateSpy} />);
+
+		expect(
+			screen.getByRole("heading", { name: /Performance & Mastery Dashboard/i })
+		).toBeTruthy();
+		expect(screen.getByText(/User's Performance Summary/i)).toBeTruthy();
+		expect(screen.getByText("Syllabary Mastery Distribution")).toBeTruthy();
+
+		const dashboardLink = screen.getByRole("link", { name: /Dashboard/i });
+		expect(dashboardLink.getAttribute("aria-current")).toBe("page");
+
+		// Load sample telemetry to populate charts and performance metrics
+		const loadSampleButton = screen.getByRole("button", {
+			name: /Load Sample Telemetry/i,
+		});
+		fireEvent.click(loadSampleButton);
+
+		// Verify executive summary metrics and charts populate
+		expect(screen.getByText(/Recent Session Performance Trend/i)).toBeTruthy();
+		expect(
+			screen.getByText(/Writing Script Comparison \(Hiragana vs\. Katakana\)/i)
+		).toBeTruthy();
+		expect(
+			screen.getByText(/Response Speed Reflex Distribution/i)
+		).toBeTruthy();
+		expect(screen.getByText(/Most Frequent Romaji Confusions/i)).toBeTruthy();
+
+		// Switch bar chart view from Category to Row
+		const byRowButton = screen.getByRole("button", { name: /By Row \(10\)/i });
+		fireEvent.click(byRowButton);
+		expect(byRowButton.getAttribute("aria-pressed")).toBe("true");
+
+		// Switch session trend chart metric to Accuracy %
+		const accuracyToggle = screen.getByRole("button", { name: /Accuracy %/i });
+		fireEvent.click(accuracyToggle);
+		expect(accuracyToggle.getAttribute("aria-pressed")).toBe("true");
+
+		// Navigate back to Practice Arena
+		const startPracticeButton = screen.getByRole("button", {
+			name: /Start Practice Session/i,
+		});
+		fireEvent.click(startPracticeButton);
+		expect(navigateSpy).toHaveBeenCalledWith("/");
+	});
+
+	it("computes comprehensive dashboard summary metrics from seeded telemetry", () => {
+		const seeded = seedSampleDashboardData();
+		const summary = buildDashboardSummary(
+			seeded.masteryMap,
+			seeded.progression,
+			seeded.highScores
+		);
+
+		expect(summary.analysis.totalAttempts).toBeGreaterThan(0);
+		expect(summary.scriptSummaries).toHaveLength(2);
+		expect(summary.categorySummaries).toHaveLength(3);
+		expect(summary.speedBuckets).toHaveLength(4);
+		expect(summary.sessionTrend).toHaveLength(6);
+		expect(summary.topConfusions.length).toBeGreaterThan(0);
+		expect(summary.recommendations.length).toBeGreaterThan(0);
+	});
+
+	it("guarantees no letter ever appears twice in a row across all deck generators, dynamic appends, and spaced retries", () => {
+		let masteryMap: Record<string, CharacterMastery> = {};
+		masteryMap = updateCharacterMastery(masteryMap, {
+			chosenRomaji: "chi",
+			isCorrect: false,
+			kanaId: "shi",
+			responseTimeMilliseconds: 2600,
+			script: "hiragana",
+		});
+
+		const singleItemTarget = [KANA_ITEMS[0]!];
+		const customDeck = generateCustomItemsDeck(
+			singleItemTarget,
+			"hiragana",
+			40,
+			masteryMap
+		);
+		const weakDeck = generateWeakLettersDeck(masteryMap, "mixed", 40, [
+			"row-a",
+		]);
+		let challengeDeck = generateChallengeDeck(
+			["row-a"],
+			"hiragana",
+			30,
+			masteryMap
+		);
+
+		// Extend dynamically 15 times and schedule spaced retries
+		for (let step = 0; step < 15; step += 1) {
+			challengeDeck = appendDistinctFlashcardToDeck(
+				challengeDeck,
+				singleItemTarget,
+				"hiragana",
+				masteryMap
+			);
+		}
+		challengeDeck = scheduleSpacedRetryInDeck(
+			challengeDeck,
+			0,
+			challengeDeck[0]!.item,
+			"hiragana"
+		);
+
+		for (const deck of [customDeck, weakDeck, challengeDeck]) {
+			for (let index = 1; index < deck.length; index += 1) {
+				const previousCard = deck[index - 1]!;
+				const currentCard = deck[index]!;
+				expect(
+					areSameOrHomophoneKana(previousCard.item, currentCard.item)
+				).toBe(false);
+				expect(previousCard.displayCharacter).not.toBe(
+					currentCard.displayCharacter
+				);
+			}
+		}
 	});
 });

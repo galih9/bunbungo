@@ -20,7 +20,10 @@ const getAudioContext = (): AudioContext | null => {
 	return sharedAudioContext;
 };
 
-export const playCorrectSound = (streakCount: number, enabled: boolean): void => {
+export const playCorrectSound = (
+	streakCount: number,
+	enabled: boolean
+): void => {
 	if (!enabled) {
 		return;
 	}
@@ -122,7 +125,11 @@ export const speakKanaCharacter = (
 	character: string,
 	enabled: boolean
 ): void => {
-	if (!enabled || typeof window === "undefined" || !("speechSynthesis" in window)) {
+	if (
+		!enabled ||
+		typeof window === "undefined" ||
+		!("speechSynthesis" in window)
+	) {
 		return;
 	}
 	try {
