@@ -1,0 +1,10 @@
+{
+  "name": "GoKana Pocket — Hiragana & Katakana Arcade",
+  "short_name": "GoKana",
+  "description": "Offline mobile-first flashcard arcade game for learning Japanese Hiragana and Katakana",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "orientation": "portrait-primary"
+}
