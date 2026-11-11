@@ -1,5 +1,6 @@
 import { useId } from "react";
 import type { FunctionComponent } from "../../common/types";
+import { AppBottomNav } from "../../components/layout/AppBottomNav";
 import { AppNavbar } from "../../components/layout/AppNavbar";
 import { LobbyDeckCustomizer } from "./components/LobbyDeckCustomizer";
 import { LobbyProgressionBanner } from "./components/LobbyProgressionBanner";
@@ -32,7 +33,7 @@ export const BunBunGoApp = (): FunctionComponent => {
 				onToggleVoice={controller.handleToggleVoice}
 			/>
 
-			<main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-5">
+			<main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 pt-5 pb-24 sm:pb-28">
 				<h1 className="visually-hidden" id={mainSkipTargetId} tabIndex={-1}>
 					Bun Bun Go Practice Arena
 				</h1>
@@ -130,6 +131,18 @@ export const BunBunGoApp = (): FunctionComponent => {
 					/>
 				)}
 			</main>
+
+			<AppBottomNav
+				activePath="/"
+				level={controller.progression.level}
+				masteredCount={controller.performanceAnalysis.strongItems.length}
+				totalAchievements={controller.achievementStatuses.length}
+				totalKanaCount={KANA_ITEMS.length}
+				unlockedAchievements={controller.unlockedAchievementCount}
+				weakCount={controller.performanceAnalysis.weakItems.length}
+				onOpenChart={controller.handleOpenChart}
+				onOpenStats={controller.handleOpenStats}
+			/>
 
 			<KanaChartModal
 				activeTab={controller.codexInitialTab}

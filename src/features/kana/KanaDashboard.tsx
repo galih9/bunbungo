@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import type { FunctionComponent } from "../../common/types";
+import { AppBottomNav } from "../../components/layout/AppBottomNav";
 import { AppNavbar } from "../../components/layout/AppNavbar";
 import { DashboardBreakdownCharts } from "./dashboard/DashboardBreakdownCharts";
 import { DashboardCharacterSpotlight } from "./dashboard/DashboardCharacterSpotlight";
@@ -152,7 +153,7 @@ export const KanaDashboard = ({
 				}}
 			/>
 
-			<main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-6">
+			<main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 pt-6 pb-24 sm:pb-28">
 				{/* Dashboard Header & Quick Actions */}
 				<div className="kana-view-enter flex flex-wrap items-start justify-between gap-4 border-b border-zinc-900 pb-5">
 					<div>
@@ -230,6 +231,22 @@ export const KanaDashboard = ({
 					onOpenFullTable={handleOpenFullTable}
 				/>
 			</main>
+
+			<AppBottomNav
+				activePath="/dashboard"
+				level={progression.level}
+				masteredCount={summary.analysis.strongItems.length}
+				totalAchievements={achievementStatuses.length}
+				totalKanaCount={KANA_ITEMS.length}
+				unlockedAchievements={unlockedAchievementCount}
+				weakCount={summary.analysis.weakItems.length}
+				onNavigate={onNavigate}
+				onOpenStats={handleOpenFullTable}
+				onOpenChart={(): void => {
+					setCodexInitialTab("chart");
+					setIsCodexOpen(true);
+				}}
+			/>
 
 			<KanaChartModal
 				activeTab={codexInitialTab}

@@ -19,8 +19,10 @@ import {
 	updateCharacterMastery,
 } from "./gameStorage";
 import { BunBunGoApp } from "./BunBunGoApp";
+import { KanaChartPage } from "./KanaChartPage";
 import { KanaDashboard } from "./KanaDashboard";
 import { KANA_ITEMS } from "./kanaData";
+import { KanaStatsPage } from "./KanaStatsPage";
 
 describe("BunBunGoApp & Local Performance / Progression Analytics", () => {
 	beforeEach(() => {
@@ -52,17 +54,67 @@ describe("BunBunGoApp & Local Performance / Progression Analytics", () => {
 		expect(screen.getByRole("button", { name: /End Run/i })).toBeTruthy();
 	});
 
-	it("switches between Hiragana, Katakana, and Mixed modes and opens the Kana Chart", () => {
+	it("switches between Hiragana, Katakana, and Mixed modes and links to the Kana Chart page", () => {
 		render(<BunBunGoApp />);
 
 		const katakanaButton = screen.getByRole("button", { name: /Katakana/i });
 		fireEvent.click(katakanaButton);
 		expect(katakanaButton.getAttribute("aria-pressed")).toBe("true");
 
-		const chartButton = screen.getByRole("button", { name: /Chart/i });
-		fireEvent.click(chartButton);
+		const chartLink = screen.getByRole("link", { name: /Chart/i });
+		expect(chartLink.getAttribute("href")).toBe("/chart");
+	});
 
-		expect(screen.getByText("Kana Codex & Mastery")).toBeTruthy();
+	it("renders the dedicated Kana Chart page with script toggles and practice navigation", () => {
+		const navigateSpy = vi.fn();
+		render(<KanaChartPage onNavigate={navigateSpy} />);
+
+		expect(
+			screen.getByRole("heading", {
+				name: /Kana Syllabary Reference Chart/i,
+			})
+		).toBeTruthy();
+
+		const chartLink = screen.getByRole("link", { name: /Chart/i });
+		expect(chartLink.getAttribute("aria-current")).toBe("page");
+
+		// Switch to Katakana script view
+		const katakanaToggle = screen.getByRole("button", {
+			name: /Katakana \(ア\)/i,
+		});
+		fireEvent.click(katakanaToggle);
+		expect(katakanaToggle.getAttribute("aria-pressed")).toBe("true");
+
+		// Click Start Practice Arena CTA
+		const practiceButton = screen.getByRole("button", {
+			name: /Practice Katakana in Arena/i,
+		});
+		fireEvent.click(practiceButton);
+		expect(navigateSpy).toHaveBeenCalledWith("/");
+	});
+
+	it("renders the dedicated Stats & Achievements page with tab switching", () => {
+		const navigateSpy = vi.fn();
+		render(<KanaStatsPage onNavigate={navigateSpy} />);
+
+		expect(
+			screen.getByRole("heading", {
+				name: /Learner Stats & Achievements/i,
+			})
+		).toBeTruthy();
+
+		const statsLink = screen.getByRole("link", { name: /Stats/i });
+		expect(statsLink.getAttribute("aria-current")).toBe("page");
+
+		// Switch to Badges tab
+		const badgesTab = screen.getByRole("tab", { name: /Badges/i });
+		fireEvent.click(badgesTab);
+		expect(badgesTab.getAttribute("aria-selected")).toBe("true");
+
+		// Switch to Leaderboard tab
+		const leaderboardTab = screen.getByRole("tab", { name: /Leaderboard/i });
+		fireEvent.click(leaderboardTab);
+		expect(leaderboardTab.getAttribute("aria-selected")).toBe("true");
 	});
 
 	it("records detailed letter telemetry and classifies weak vs strong performing letters", () => {
@@ -191,11 +243,17 @@ describe("BunBunGoApp & Local Performance / Progression Analytics", () => {
 		const primaryNav = screen.getByRole("navigation", { name: "Primary" });
 		expect(primaryNav).toBeTruthy();
 
-		const practiceLink = screen.getByRole("link", { name: /Practice/i });
+		const practiceLink = screen.getByRole("link", { name: /^Practice$/i });
 		expect(practiceLink.getAttribute("aria-current")).toBe("page");
 
 		const dashboardLink = screen.getByRole("link", { name: /Dashboard/i });
 		expect(dashboardLink.getAttribute("aria-current")).toBeNull();
+
+		const chartLink = screen.getByRole("link", { name: /Chart/i });
+		expect(chartLink.getAttribute("href")).toBe("/chart");
+
+		const statsLink = screen.getByRole("link", { name: /Stats/i });
+		expect(statsLink.getAttribute("href")).toBe("/stats");
 	});
 
 	it("renders the Performance & Mastery Dashboard with charts, user performance summary, and sample telemetry", () => {

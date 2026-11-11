@@ -12,7 +12,7 @@ export type InputMode = "choice" | "typing";
 export type PracticeFocusMode = "standard" | "weak-letters";
 export type LetterPerformanceTier = "unseen" | "weak" | "learning" | "strong";
 export type AchievementCategory = "streak" | "unlock" | "performance";
-export type AppRoutePath = "/" | "/dashboard";
+export type AppRoutePath = "/" | "/dashboard" | "/chart" | "/stats";
 
 export interface CharacterMastery {
 	readonly attempts: number;

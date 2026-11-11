@@ -248,6 +248,27 @@ li {
 	}
 }
 
+/* Mobile App Bottom Navigation Bar styling */
+.app-bottom-nav {
+	padding-left: max(0.5rem, env(safe-area-inset-left, 0px));
+	padding-right: max(0.5rem, env(safe-area-inset-right, 0px));
+}
+
+.app-bottom-nav a[aria-current="page"] {
+	position: relative;
+}
+
+@media (forced-colors: active) {
+	.app-bottom-nav a[aria-current="page"],
+	.app-bottom-nav .app-tab-active {
+		outline: 2px solid Highlight;
+		outline-offset: -2px;
+	}
+	.app-bottom-nav .app-tab-indicator {
+		background-color: Highlight;
+	}
+}
+
 /* Native <progress> styling per modern-web-guidance */
 progress {
 	appearance: none;
